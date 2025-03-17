@@ -1,0 +1,11 @@
+create:
+  s3: saladin-example-default-terraform-state
+  dynamo: default-terraform-lock-table
+
+execute:
+  execute: bash tools/tools.sh cloud --action destroy --directory aws --part apps --items web-server
+  get: policy arn attach to variables.yaml file cloud/infras/core directory
+  execute: bash tools/tools.sh cloud --action destroy --directory aws --part infras --items core
+
+manual:
+  backup cronjob for sync data to s3 with attached role: 0 0 * * * /usr/bin/aws s3 sync ./file s3://example-defaul-backup-web-server/ 
