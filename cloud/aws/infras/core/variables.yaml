@@ -1,0 +1,72 @@
+vpc:
+  cidr: "10.10.0.0/16"
+  zones: ["us-east-1a", "us-east-1b", "us-east-1c"]
+  public_subnets: ["10.10.10.0/24", "10.10.20.0/24", "10.10.30.0/24"]
+  private_subnets: ["10.10.110.0/24", "10.10.120.0/24", "10.10.130.0/24"]
+  database_subnets: ["10.10.210.0/24", "10.10.220.0/24"]
+  single_nat_gateway: true
+
+ec2:
+  web-server:
+    instance_type: t3a.medium
+    ami: ami-0103953a003440c37
+    init_script: script/web-server-setup.sh
+    create_key: true
+    zone: "us-east-1b"
+    vpc_security_group_ids: ["http-access"]
+    iam_role_policies: 
+      s3backup: "arn:aws:iam::214571729147:policy/example-default-web-server-policy"
+    lb: ["web-server-alb"]
+    autoscaling:
+      min_size: 1
+      desired_size: 1
+      max_size: 10
+      health_check_type: ELB
+      health_check_grace_period: 180
+      block_device_mappings:
+        - device_name: "/dev/xvda"
+          ebs:
+            volume_size: 20
+            volume_type: gp3
+            delete_on_termination: true
+      scaling_policies:
+        avg-cpu-policy-greater-than-50:
+          policy_type: "TargetTrackingScaling"
+          estimated_instance_warmup: 1200
+          target_tracking_configuration: 
+            predefined_metric_specification:
+              predefined_metric_type: "ASGAverageCPUUtilization"
+            target_value: 50
+
+sg:
+  ssh-access:
+    description: "Allow SSH access"
+    ingress_with_cidr_blocks:
+      - from_port  : 22
+        to_port    : 22
+        protocol   : "tcp"
+        description: "SSH access from anywhere"
+        cidr_blocks: "0.0.0.0/0"
+  http-access:
+    description: "Allow HTTP/HTTPS access"
+    ingress_with_cidr_blocks:
+      - from_port  : 80
+        to_port    : 80
+        protocol   : "tcp"
+        description: "HTTP access from anywhere"
+        cidr_blocks: "0.0.0.0/0"
+      - from_port  : 443
+        to_port    : 443
+        protocol   : "tcp"
+        description: "HTTPS access from anywhere"
+        cidr_blocks: "0.0.0.0/0"
+
+alb:
+  web-server-alb:
+    security_groups: ["http-access"]
+    deletion_protection: false
+
+s3:
+  backup-web-server:
+    acl: private 
+    versioning: false

@@ -1,0 +1,11 @@
+project:
+  company: example
+  env: default
+  key_directory: ../../../../../../../../key/key-pair
+  auth_file: key/auth/auth.yaml
+
+terraform_config:
+  profile: default
+  zone: us-east-1
+  bucket: gearment-example-default-terraform-state
+  dynamodb_table: default-terraform-lock-table
