@@ -117,30 +117,31 @@ s3:
 
 # TO RUN THIS PROJECT:
 
-create:
+## create
+```
   s3: gearment-example-default-terraform-state
   dynamo: default-terraform-lock-table
+```
+## command
+* Note always use action plan before action apply to make sure every is right
 
-command:
-  execute in order:
-    to check every things work before apply:
-    - bash tools/tools.sh cloud --action plan --directory aws --part apps --items web-server
-    apply IaC:
-    - bash tools/tools.sh cloud --action apply --directory aws --part apps --items web-server
-  Note: get policy arn just created to attach to variables.yaml file cloud/infras/core directory to apply policy for ec2 role
-  execute in order:
-    to check every things work before apply:
-    - bash tools/tools.sh cloud --action plan --directory aws --part infras --items core
-    apply IaC:
-    - bash tools/tools.sh cloud --action apply --directory aws --part infras --items core
-
-manual:
-  backup cronjob for sync data to s3 with attached role, could add to init script to auto do this tasks: 0 0 * * * /usr/bin/aws s3 sync ./file s3://example-defaul-backup-web-server/ 
-
-test web server:
+```
+  - bash tools/tools.sh cloud --action plan --directory aws --part apps --items web-server
+  - bash tools/tools.sh cloud --action apply --directory aws --part apps --items web-server
+  - bash tools/tools.sh cloud --action plan --directory aws --part infras --items core
+  - bash tools/tools.sh cloud --action apply --directory aws --part infras --items core
+```
+## manual
+  backup cronjob for sync data to s3 with attached role, could add to init script to auto do this tasks: 
+```
+  0 0 * * * /usr/bin/aws s3 sync ./file s3://example-defaul-backup-web-server/
+```
+## test web server
   go to aws console get alb domain name and access in browser for curl command (curl [alb_domain_name])
 
-Note: clean up process
-  execute in order:
+## clean up process 
+* Note: execute in order:
+```
     - bash tools/tools.sh cloud --action destroy --directory aws --part infras --items core
     - bash tools/tools.sh cloud --action destroy --directory aws --part apps --items web-server
+```
