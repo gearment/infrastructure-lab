@@ -15,8 +15,7 @@ ec2:
     zone: "us-east-1b"
     vpc_security_group_ids: ["http-access"]
     iam_role_policies: 
-      # s3backup: "arn:aws:iam::214571729147:policy/example-default-web-server-policy"
-      s3backup: "arn:aws:iam::214571729147:policy/AllSqsPermissionDevelop"
+      s3backup: "arn:aws:iam::214571729147:policy/example-default-web-server-policy"
     lb: ["web-server-alb"]
     autoscaling:
       min_size: 1
@@ -67,7 +66,7 @@ alb:
     security_groups: ["http-access"]
     deletion_protection: false
 
-# s3:
-#   backup-web-server:
-#     acl: private 
-#     versioning: false
+s3:
+  backup-web-server:
+    acl: private 
+    versioning: false

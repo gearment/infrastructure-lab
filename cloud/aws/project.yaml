@@ -7,5 +7,5 @@ project:
 terraform_config:
   profile: default
   zone: us-east-1
-  bucket: saladin-example-default-terraform-state
+  bucket: gearment-example-default-terraform-state
   dynamodb_table: default-terraform-lock-table
